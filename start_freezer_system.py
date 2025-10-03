@@ -132,13 +132,31 @@ def main():
     
     # Check if required packages are installed
     try:
-        import RPi.GPIO
-        import Adafruit_DHT
         import flask
+        print("✓ Flask available")
     except ImportError as e:
         print(f"Missing required package: {e}")
-        print("Please install requirements: pip install -r requirements.txt")
+        print("Please install requirements: pip install -r requirements-simple.txt")
         return
+    
+    # Check optional packages
+    try:
+        import RPi.GPIO
+        print("✓ RPi.GPIO available")
+    except ImportError:
+        print("⚠ RPi.GPIO not available - GPIO functions will be disabled")
+    
+    try:
+        import serial
+        print("✓ Serial communication available")
+    except ImportError:
+        print("⚠ Serial not available - CO2 sensor will be disabled")
+    
+    try:
+        import adafruit_ads1x15
+        print("✓ ADC modules available")
+    except ImportError:
+        print("⚠ ADC modules not available - MQ sensors will be disabled")
     
     # Start the system
     system = FreezerSystem()
