@@ -1,0 +1,191 @@
+.touch-interface {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.touch-interface .card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.touch-interface .form-control,
+.touch-interface .form-select {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.touch-interface .form-control:focus,
+.touch-interface .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+}
+
+.touch-interface .btn {
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.touch-interface .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.touch-interface .btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+}
+
+.category-btn {
+    border: 2px solid #007bff;
+    background: white;
+    color: #007bff;
+    transition: all 0.3s ease;
+}
+
+.category-btn:hover,
+.category-btn.active {
+    background: #007bff;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+}
+
+.touch-interface .card-header {
+    border-radius: 15px 15px 0 0 !important;
+    border: none;
+}
+
+.inventory-item {
+    padding: 1rem;
+    border-bottom: 1px solid #e9ecef;
+    transition: background-color 0.2s;
+}
+
+.inventory-item:hover {
+    background-color: #f8f9fa;
+}
+
+.inventory-item:last-child {
+    border-bottom: none;
+}
+
+.item-name {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.25rem;
+}
+
+.item-details {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.item-category {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-top: 0.25rem;
+}
+
+.category-meat { background-color: #ffebee; color: #c62828; }
+.category-dairy { background-color: #e3f2fd; color: #1565c0; }
+.category-vegetables { background-color: #e8f5e8; color: #2e7d32; }
+.category-fruits { background-color: #fff3e0; color: #ef6c00; }
+.category-seafood { background-color: #e0f2f1; color: #00695c; }
+.category-frozen { background-color: #f3e5f5; color: #7b1fa2; }
+
+.sensor-card {
+    border-radius: 10px;
+    border: none;
+    transition: transform 0.2s;
+}
+
+.sensor-card:hover {
+    transform: translateY(-2px);
+}
+
+.sensor-card i {
+    color: #007bff;
+}
+
+.sensor-card.warning {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+}
+
+.sensor-card.danger {
+    background-color: #f8d7da;
+    border-left: 4px solid #dc3545;
+}
+
+.sensor-card.success {
+    background-color: #d4edda;
+    border-left: 4px solid #28a745;
+}
+
+#touch-inventory-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+#touch-inventory-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+#touch-inventory-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+#touch-inventory-list::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+#touch-inventory-list::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.empty-inventory {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+}
+
+.empty-inventory i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.success-animation {
+    animation: successPulse 0.6s ease-in-out;
+}
+
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
