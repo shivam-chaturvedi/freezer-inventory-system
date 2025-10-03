@@ -1,0 +1,403 @@
+/* Pi Display CSS - Optimized for 5-inch touch screen */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body.pi-display {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    height: 100vh;
+    overflow: hidden;
+    color: #333;
+}
+
+/* Header */
+.header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    padding: 15px 0;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+.display-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.display-title i {
+    color: #3498db;
+    margin-right: 10px;
+}
+
+.time-display {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.status-indicator {
+    font-size: 0.9rem;
+    color: #27ae60;
+    font-weight: 500;
+}
+
+.status-indicator i {
+    color: #27ae60;
+    margin-right: 5px;
+}
+
+/* Main Content */
+.main-content {
+    height: calc(100vh - 80px);
+    padding: 20px 0;
+}
+
+/* Inventory Section */
+.inventory-section {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.section-header {
+    padding: 20px 25px 15px;
+    border-bottom: 2px solid #ecf0f1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-header h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.section-header h3 i {
+    color: #3498db;
+    margin-right: 10px;
+}
+
+.inventory-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.inventory-actions .btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 8px;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.inventory-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.inventory-list {
+    flex: 1;
+    padding: 20px 25px;
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+}
+
+.inventory-item {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.inventory-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-color: #3498db;
+}
+
+.inventory-item.spoiled {
+    background: #fff5f5;
+    border-color: #e74c3c;
+}
+
+.inventory-item.expiring {
+    background: #fff8e1;
+    border-color: #f39c12;
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.item-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.item-quantity {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #7f8c8d;
+    background: #ecf0f1;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.item-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.item-category {
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 15px;
+    color: white;
+}
+
+.category-meat { background: #e74c3c; }
+.category-dairy { background: #3498db; }
+.category-vegetables { background: #27ae60; }
+.category-fruits { background: #f39c12; }
+.category-seafood { background: #16a085; }
+.category-frozen { background: #9b59b6; }
+.category-other { background: #95a5a6; }
+
+.item-dates {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+}
+
+.item-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-fresh { color: #27ae60; }
+.status-expiring { color: #f39c12; }
+.status-spoiled { color: #e74c3c; }
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* Sensors Section */
+.sensors-section {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    height: 100%;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.sensors-section h4 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.sensors-section h4 i {
+    color: #3498db;
+    margin-right: 8px;
+}
+
+.sensor-card {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.sensor-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.sensor-card.warning {
+    border-color: #f39c12;
+    background: #fff8e1;
+}
+
+.sensor-card.danger {
+    border-color: #e74c3c;
+    background: #fff5f5;
+}
+
+.sensor-card.success {
+    border-color: #27ae60;
+    background: #f0fff4;
+}
+
+.sensor-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #3498db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.sensor-info {
+    flex: 1;
+}
+
+.sensor-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #7f8c8d;
+    margin-bottom: 4px;
+}
+
+.sensor-value {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.alert-section {
+    margin-top: 20px;
+}
+
+.alert-card {
+    background: #fff5f5;
+    border: 2px solid #e74c3c;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    color: #e74c3c;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.alert-card i {
+    margin-right: 8px;
+    font-size: 1.2rem;
+}
+
+/* Empty State */
+.empty-inventory {
+    text-align: center;
+    padding: 40px 20px;
+    color: #7f8c8d;
+}
+
+.empty-inventory i {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.empty-inventory h4 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.empty-inventory p {
+    font-size: 1.1rem;
+}
+
+/* Scrollbar Styling */
+.inventory-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.inventory-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.inventory-list::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.inventory-list::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Responsive adjustments for very small screens */
+@media (max-width: 768px) {
+    .display-title {
+        font-size: 1.8rem;
+    }
+    
+    .section-header h3 {
+        font-size: 1.4rem;
+    }
+    
+    .inventory-item {
+        padding: 12px 15px;
+    }
+    
+    .item-name {
+        font-size: 1.1rem;
+    }
+}
+
+/* Animation for new items */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.inventory-item.new-item {
+    animation: slideIn 0.5s ease-out;
+}
+
+/* Pulse animation for alerts */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.alert-card.alert-pulse {
+    animation: pulse 2s infinite;
+}

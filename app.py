@@ -72,6 +72,10 @@ def dashboard():
 def touch_interface():
     return render_template('touch_interface.html')
 
+@app.route('/pi')
+def pi_display():
+    return render_template('pi_display.html')
+
 @app.route('/api/inventory', methods=['GET'])
 def get_inventory():
     items = InventoryItem.query.all()
