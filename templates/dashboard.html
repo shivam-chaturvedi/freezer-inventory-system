@@ -29,36 +29,70 @@
         <!-- Sensor Status Cards -->
         <div class="row mb-4">
             <div class="col-md-3">
-                <div class="card text-white" id="temperature-card">
+                <div class="card text-white" id="co2-card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <h6 class="card-title">Temperature</h6>
-                                <h3 id="temperature-value">--°C</h3>
+                                <h6 class="card-title">CO2 Level</h6>
+                                <h3 id="co2-value">-- PPM</h3>
                             </div>
                             <div class="align-self-center">
-                                <i class="fas fa-thermometer-half fa-2x"></i>
+                                <i class="fas fa-wind fa-2x"></i>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card text-white" id="humidity-card">
+                <div class="card text-white" id="ammonia-card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <h6 class="card-title">Humidity</h6>
-                                <h3 id="humidity-value">--%</h3>
+                                <h6 class="card-title">Ammonia</h6>
+                                <h3 id="ammonia-value">-- PPM</h3>
                             </div>
                             <div class="align-self-center">
-                                <i class="fas fa-tint fa-2x"></i>
+                                <i class="fas fa-skull-crossbones fa-2x"></i>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
+                <div class="card text-white" id="h2s-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">H2S Level</h6>
+                                <h3 id="h2s-value">-- PPM</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-biohazard fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white" id="air-quality-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Air Quality</h6>
+                                <h3 id="air-quality-value">--</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-leaf fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Door Status and Spoilage Cards -->
+        <div class="row mb-4">
+            <div class="col-md-6">
                 <div class="card text-white" id="door-card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
@@ -73,7 +107,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <div class="card text-white" id="spoilage-card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">

@@ -46,19 +46,21 @@ class InventoryItem(db.Model):
 class SensorData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    temperature = db.Column(db.Float)  # in Celsius
-    humidity = db.Column(db.Float)     # in percentage
+    co2_ppm = db.Column(db.Float)      # CO2 concentration in PPM
+    ammonia_ppm = db.Column(db.Float)  # Ammonia concentration in PPM
+    h2s_ppm = db.Column(db.Float)      # Hydrogen sulfide concentration in PPM
     door_open = db.Column(db.Boolean)  # True if door is open
-    light_level = db.Column(db.Float)  # Optional light sensor
+    air_quality = db.Column(db.String(20))  # good, moderate, poor, unknown
     
     def to_dict(self):
         return {
             'id': self.id,
             'timestamp': self.timestamp.isoformat(),
-            'temperature': self.temperature,
-            'humidity': self.humidity,
+            'co2_ppm': self.co2_ppm,
+            'ammonia_ppm': self.ammonia_ppm,
+            'h2s_ppm': self.h2s_ppm,
             'door_open': self.door_open,
-            'light_level': self.light_level
+            'air_quality': self.air_quality
         }
 
 # Routes
@@ -131,10 +133,11 @@ def add_sensor_data():
     data = request.get_json()
     
     sensor_data = SensorData(
-        temperature=data.get('temperature'),
-        humidity=data.get('humidity'),
+        co2_ppm=data.get('co2_ppm'),
+        ammonia_ppm=data.get('ammonia_ppm'),
+        h2s_ppm=data.get('h2s_ppm'),
         door_open=data.get('door_open', False),
-        light_level=data.get('light_level')
+        air_quality=data.get('air_quality', 'unknown')
     )
     
     db.session.add(sensor_data)
@@ -157,19 +160,36 @@ def check_spoilage():
     items = InventoryItem.query.filter_by(is_spoiled=False).all()
     
     spoiled_items = []
+    warnings = []
     
     if latest_sensor:
-        # Check temperature - if too high, mark items as potentially spoiled
-        if latest_sensor.temperature > 4:  # Above safe refrigeration temperature
+        # Check ammonia levels - high ammonia indicates spoiled food
+        if latest_sensor.ammonia_ppm and latest_sensor.ammonia_ppm > 25:
             for item in items:
                 if item.category in ['meat', 'dairy', 'seafood']:
                     item.is_spoiled = True
                     spoiled_items.append(item.name)
+            warnings.append(f"High ammonia detected: {latest_sensor.ammonia_ppm:.2f} PPM")
         
-        # Check if door has been open too long
+        # Check H2S levels - high H2S indicates spoiled food
+        if latest_sensor.h2s_ppm and latest_sensor.h2s_ppm > 10:
+            for item in items:
+                if item.category in ['meat', 'dairy', 'seafood']:
+                    item.is_spoiled = True
+                    spoiled_items.append(item.name)
+            warnings.append(f"High H2S detected: {latest_sensor.h2s_ppm:.2f} PPM")
+        
+        # Check air quality
+        if latest_sensor.air_quality == 'poor':
+            warnings.append("Poor air quality detected - possible spoiled food")
+        
+        # Check CO2 levels - high CO2 might indicate door left open
+        if latest_sensor.co2_ppm and latest_sensor.co2_ppm > 1000:
+            warnings.append(f"High CO2 detected: {latest_sensor.co2_ppm} PPM - check ventilation")
+        
+        # Check if door has been open
         if latest_sensor.door_open:
-            # This would need more sophisticated logic in a real implementation
-            pass
+            warnings.append("Door is open")
     
     # Check expiry dates
     for item in items:
@@ -181,8 +201,12 @@ def check_spoilage():
     
     return jsonify({
         'spoiled_items': spoiled_items,
-        'temperature_warning': latest_sensor.temperature > 4 if latest_sensor else False,
-        'door_open': latest_sensor.door_open if latest_sensor else False
+        'warnings': warnings,
+        'air_quality': latest_sensor.air_quality if latest_sensor else 'unknown',
+        'door_open': latest_sensor.door_open if latest_sensor else False,
+        'ammonia_level': latest_sensor.ammonia_ppm if latest_sensor else None,
+        'h2s_level': latest_sensor.h2s_ppm if latest_sensor else None,
+        'co2_level': latest_sensor.co2_ppm if latest_sensor else None
     })
 
 if __name__ == '__main__':

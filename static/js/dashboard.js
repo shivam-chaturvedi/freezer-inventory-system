@@ -45,40 +45,80 @@ async function loadSensorData() {
 }
 
 function updateSensorDisplay() {
-    // Update temperature
-    const tempElement = document.getElementById('temperature-value');
-    const tempCard = document.getElementById('temperature-card');
-    if (sensorData.temperature !== undefined) {
-        tempElement.textContent = `${sensorData.temperature.toFixed(1)}°C`;
+    // Update CO2 level
+    const co2Element = document.getElementById('co2-value');
+    const co2Card = document.getElementById('co2-card');
+    if (sensorData.co2_ppm !== undefined) {
+        co2Element.textContent = `${sensorData.co2_ppm} PPM`;
         
-        // Color code based on temperature
-        tempCard.className = 'card text-white';
-        if (sensorData.temperature > 4) {
-            tempCard.classList.add('danger');
-        } else if (sensorData.temperature > 2) {
-            tempCard.classList.add('warning');
+        // Color code based on CO2 level
+        co2Card.className = 'card text-white';
+        if (sensorData.co2_ppm > 1000) {
+            co2Card.classList.add('danger');
+        } else if (sensorData.co2_ppm > 500) {
+            co2Card.classList.add('warning');
         } else {
-            tempCard.classList.add('success');
+            co2Card.classList.add('success');
         }
     } else {
-        tempElement.textContent = '--°C';
+        co2Element.textContent = '-- PPM';
     }
 
-    // Update humidity
-    const humidityElement = document.getElementById('humidity-value');
-    const humidityCard = document.getElementById('humidity-card');
-    if (sensorData.humidity !== undefined) {
-        humidityElement.textContent = `${sensorData.humidity.toFixed(1)}%`;
+    // Update ammonia level
+    const ammoniaElement = document.getElementById('ammonia-value');
+    const ammoniaCard = document.getElementById('ammonia-card');
+    if (sensorData.ammonia_ppm !== undefined) {
+        ammoniaElement.textContent = `${sensorData.ammonia_ppm.toFixed(2)} PPM`;
         
-        // Color code based on humidity
-        humidityCard.className = 'card text-white';
-        if (sensorData.humidity > 80) {
-            humidityCard.classList.add('warning');
-        } else if (sensorData.humidity < 30) {
-            humidityCard.classList.add('danger');
+        // Color code based on ammonia level
+        ammoniaCard.className = 'card text-white';
+        if (sensorData.ammonia_ppm > 25) {
+            ammoniaCard.classList.add('danger');
+        } else if (sensorData.ammonia_ppm > 10) {
+            ammoniaCard.classList.add('warning');
+        } else {
+            ammoniaCard.classList.add('success');
         }
     } else {
-        humidityElement.textContent = '--%';
+        ammoniaElement.textContent = '-- PPM';
+    }
+
+    // Update H2S level
+    const h2sElement = document.getElementById('h2s-value');
+    const h2sCard = document.getElementById('h2s-card');
+    if (sensorData.h2s_ppm !== undefined) {
+        h2sElement.textContent = `${sensorData.h2s_ppm.toFixed(2)} PPM`;
+        
+        // Color code based on H2S level
+        h2sCard.className = 'card text-white';
+        if (sensorData.h2s_ppm > 10) {
+            h2sCard.classList.add('danger');
+        } else if (sensorData.h2s_ppm > 5) {
+            h2sCard.classList.add('warning');
+        } else {
+            h2sCard.classList.add('success');
+        }
+    } else {
+        h2sElement.textContent = '-- PPM';
+    }
+
+    // Update air quality
+    const airQualityElement = document.getElementById('air-quality-value');
+    const airQualityCard = document.getElementById('air-quality-card');
+    if (sensorData.air_quality !== undefined) {
+        airQualityElement.textContent = sensorData.air_quality.toUpperCase();
+        
+        // Color code based on air quality
+        airQualityCard.className = 'card text-white';
+        if (sensorData.air_quality === 'poor') {
+            airQualityCard.classList.add('danger');
+        } else if (sensorData.air_quality === 'moderate') {
+            airQualityCard.classList.add('warning');
+        } else if (sensorData.air_quality === 'good') {
+            airQualityCard.classList.add('success');
+        }
+    } else {
+        airQualityElement.textContent = '--';
     }
 
     // Update door status
