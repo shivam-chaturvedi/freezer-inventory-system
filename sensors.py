@@ -4,17 +4,30 @@ Raspberry Pi Sensor Integration for Freezer Inventory System
 This script reads sensor data from MH-Z19E (CO2), MQ137 (Ammonia), and MQ136 (H2S) sensors
 """
 
-import RPi.GPIO as GPIO
 import requests
 import time
 import json
 import serial
-import busio
-import board
-import adafruit_ads1x15.ads1115 as ADS
-from adafruit_ads1x15.analog_in import AnalogIn
 from datetime import datetime
 import logging
+
+# Try to import Raspberry Pi specific modules
+try:
+    import RPi.GPIO as GPIO
+    GPIO_AVAILABLE = True
+except ImportError:
+    print("Warning: RPi.GPIO not available - GPIO functions will be disabled")
+    GPIO_AVAILABLE = False
+
+try:
+    import busio
+    import board
+    import adafruit_ads1x15.ads1115 as ADS
+    from adafruit_ads1x15.analog_in import AnalogIn
+    ADC_AVAILABLE = True
+except ImportError:
+    print("Warning: ADC modules not available - MQ sensor readings will be disabled")
+    ADC_AVAILABLE = False
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -29,12 +42,23 @@ class FreezerSensors:
         self.co2_baudrate = 9600
         
         # ADC configuration for MQ sensors
-        self.i2c = busio.I2C(board.SCL, board.SDA)
-        self.ads = ADS.ADS1115(self.i2c)
-        
-        # MQ sensor channels
-        self.mq137_channel = AnalogIn(self.ads, ADS.P0)  # Ammonia sensor
-        self.mq136_channel = AnalogIn(self.ads, ADS.P1)  # H2S sensor
+        if ADC_AVAILABLE:
+            try:
+                self.i2c = busio.I2C(board.SCL, board.SDA)
+                self.ads = ADS.ADS1115(self.i2c)
+                
+                # MQ sensor channels
+                self.mq137_channel = AnalogIn(self.ads, ADS.P0)  # Ammonia sensor
+                self.mq136_channel = AnalogIn(self.ads, ADS.P1)  # H2S sensor
+            except Exception as e:
+                logger.error(f"Error setting up ADC: {e}")
+                self.ads = None
+                self.mq137_channel = None
+                self.mq136_channel = None
+        else:
+            self.ads = None
+            self.mq137_channel = None
+            self.mq136_channel = None
         
         # Door sensor configuration (magnetic switch)
         self.door_sensor_pin = 18  # GPIO pin for door sensor
@@ -47,6 +71,10 @@ class FreezerSensors:
         
     def setup_gpio(self):
         """Initialize GPIO pins"""
+        if not GPIO_AVAILABLE:
+            logger.warning("GPIO not available - door sensor will be disabled")
+            return
+            
         try:
             GPIO.setmode(GPIO.BCM)
             GPIO.setup(self.door_sensor_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -94,6 +122,9 @@ class FreezerSensors:
     
     def read_mq137_ammonia(self):
         """Read ammonia concentration from MQ137 sensor"""
+        if not ADC_AVAILABLE or not self.mq137_channel:
+            return None
+            
         try:
             # Read raw ADC value
             raw_value = self.mq137_channel.value
@@ -115,6 +146,9 @@ class FreezerSensors:
     
     def read_mq136_h2s(self):
         """Read hydrogen sulfide concentration from MQ136 sensor"""
+        if not ADC_AVAILABLE or not self.mq136_channel:
+            return None
+            
         try:
             # Read raw ADC value
             raw_value = self.mq136_channel.value
@@ -158,6 +192,9 @@ class FreezerSensors:
     
     def read_door_status(self):
         """Read door status from magnetic switch"""
+        if not GPIO_AVAILABLE:
+            return None
+            
         try:
             # Magnetic switch: LOW when door is closed, HIGH when door is open
             door_open = GPIO.input(self.door_sensor_pin)
@@ -306,7 +343,8 @@ class FreezerSensors:
         try:
             if hasattr(self, 'co2_serial') and self.co2_serial:
                 self.co2_serial.close()
-            GPIO.cleanup()
+            if GPIO_AVAILABLE:
+                GPIO.cleanup()
             logger.info("Cleanup completed")
         except Exception as e:
             logger.error(f"Error during cleanup: {e}")

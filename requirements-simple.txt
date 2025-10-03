@@ -6,5 +6,5 @@ python-dotenv==1.0.0
 schedule==1.2.0
 requests==2.31.0
 RPi.GPIO==0.7.1
-adafruit-circuitpython-ads1x15
 pyserial==3.5
+adafruit-ads1x15
