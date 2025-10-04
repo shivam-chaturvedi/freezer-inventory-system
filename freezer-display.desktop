@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Freezer Display
+Comment=Freezer Inventory Display System
+Exec=/home/pi/freezer-inventory-system/start_pi_display_auto.sh
+Icon=applications-system
+Terminal=false
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+X-GNOME-Autostart-Delay=10
+StartupNotify=false

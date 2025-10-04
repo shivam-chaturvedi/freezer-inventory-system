@@ -8,10 +8,11 @@ Type=simple
 User=pi
 Group=pi
 WorkingDirectory=/home/pi/freezer-inventory-system
-ExecStart=/home/pi/freezer-inventory-system/start_pi_display.sh
+ExecStart=/home/pi/freezer-inventory-system/start_pi_display_auto.sh
 Restart=always
 RestartSec=10
 Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/pi/.Xauthority
 
 [Install]
 WantedBy=graphical.target
