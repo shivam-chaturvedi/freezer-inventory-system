@@ -19,7 +19,35 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(() => {
         location.reload();
     }, 300000);
+    
+    // Setup virtual keyboard for touch inputs
+    setupVirtualKeyboard();
 });
+
+function setupVirtualKeyboard() {
+    // Add click listeners to all input fields
+    const inputs = document.querySelectorAll('input[type="text"], input[type="number"], textarea');
+    
+    inputs.forEach(input => {
+        // Prevent default keyboard on touch devices
+        input.addEventListener('focus', function(e) {
+            e.preventDefault();
+            virtualKeyboard.show(this);
+        });
+        
+        // Also show keyboard on click/touch
+        input.addEventListener('click', function(e) {
+            e.preventDefault();
+            virtualKeyboard.show(this);
+        });
+        
+        // Show keyboard on touch start
+        input.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            virtualKeyboard.show(this);
+        });
+    });
+}
 
 function updateCurrentTime() {
     const now = new Date();
@@ -259,13 +287,14 @@ function showAddItemModal() {
     const modal = new bootstrap.Modal(document.getElementById('addItemModal'));
     modal.show();
     
-    // Focus on the first input field to trigger virtual keyboard
+    // Setup virtual keyboard for modal inputs
     setTimeout(() => {
+        setupVirtualKeyboard();
+        
+        // Show virtual keyboard for the first input
         const nameInput = document.getElementById('item-name');
         if (nameInput) {
-            nameInput.focus();
-            // Trigger click to ensure virtual keyboard appears on touch devices
-            nameInput.click();
+            virtualKeyboard.show(nameInput);
         }
     }, 500);
 }

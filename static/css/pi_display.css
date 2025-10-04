@@ -39,6 +39,124 @@ textarea[inputmode="text"] {
     user-select: text;
 }
 
+/* Virtual Keyboard Styles */
+.virtual-keyboard {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #f8f9fa;
+    border-top: 2px solid #dee2e6;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    display: none;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+.keyboard-header {
+    background: #007bff;
+    color: white;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+}
+
+.keyboard-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.keyboard-body {
+    padding: 15px;
+}
+
+.keyboard-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+    gap: 4px;
+}
+
+.key {
+    background: white;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 12px 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 40px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.key:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.key:active,
+.key.key-pressed {
+    background: #007bff;
+    color: white;
+    border-color: #0056b3;
+    transform: scale(0.95);
+}
+
+.key[data-key="space"] {
+    min-width: 120px;
+}
+
+.key[data-key="backspace"],
+.key[data-key="enter"] {
+    background: #6c757d;
+    color: white;
+    border-color: #5a6268;
+}
+
+.key[data-key="backspace"]:hover,
+.key[data-key="enter"]:hover {
+    background: #5a6268;
+}
+
+/* Adjust modal for keyboard */
+.modal-dialog {
+    margin-bottom: 200px;
+}
+
+/* Touch-friendly input styling */
+input[type="text"], 
+input[type="number"], 
+textarea {
+    cursor: pointer;
+}
+
+input[type="text"]:focus, 
+input[type="number"]:focus, 
+textarea:focus {
+    cursor: text;
+}
+
 body.pi-display {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
