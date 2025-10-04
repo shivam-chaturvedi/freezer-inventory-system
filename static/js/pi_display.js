@@ -100,10 +100,18 @@ function renderInventoryList() {
             statusIcon = 'fas fa-exclamation-triangle status-spoiled';
         } else if (expiryDate) {
             const daysUntilExpiry = Math.ceil((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
-            if (daysUntilExpiry <= 0) {
-                statusClass = 'spoiled';
-                statusText = 'Expired';
-                statusIcon = 'fas fa-times-circle status-spoiled';
+            if (daysUntilExpiry < 0) {
+                // Only show as expired if it's been expired for more than 1 day
+                const daysOverdue = Math.abs(daysUntilExpiry);
+                if (daysOverdue > 1) {
+                    statusClass = 'spoiled';
+                    statusText = 'Expired';
+                    statusIcon = 'fas fa-times-circle status-spoiled';
+                } else {
+                    statusClass = 'expiring';
+                    statusText = 'Expires Today';
+                    statusIcon = 'fas fa-clock status-expiring';
+                }
             } else if (daysUntilExpiry <= 3) {
                 statusClass = 'expiring';
                 statusText = 'Expires Soon';
@@ -250,6 +258,16 @@ function updateSensorDisplay() {
 function showAddItemModal() {
     const modal = new bootstrap.Modal(document.getElementById('addItemModal'));
     modal.show();
+    
+    // Focus on the first input field to trigger virtual keyboard
+    setTimeout(() => {
+        const nameInput = document.getElementById('item-name');
+        if (nameInput) {
+            nameInput.focus();
+            // Trigger click to ensure virtual keyboard appears on touch devices
+            nameInput.click();
+        }
+    }, 500);
 }
 
 async function addItem() {

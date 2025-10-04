@@ -195,11 +195,14 @@ def check_spoilage():
         if latest_sensor.door_open:
             warnings.append("Door is open")
     
-    # Check expiry dates
+    # Check expiry dates - only mark as spoiled if expired by more than 1 day
     for item in items:
-        if item.expiry_date and item.expiry_date < datetime.utcnow():
-            item.is_spoiled = True
-            spoiled_items.append(item.name)
+        if item.expiry_date:
+            # Calculate days since expiry
+            days_since_expiry = (datetime.utcnow() - item.expiry_date).days
+            if days_since_expiry > 0:  # Only mark as spoiled if expired for more than 0 days (i.e., actually expired)
+                item.is_spoiled = True
+                spoiled_items.append(item.name)
     
     db.session.commit()
     
