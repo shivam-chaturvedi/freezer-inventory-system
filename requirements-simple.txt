@@ -8,4 +8,3 @@ requests==2.31.0
 RPi.GPIO==0.7.1
 pyserial==3.5
 adafruit-ads1x15
-qrcode[pil]==7.4.2

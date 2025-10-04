@@ -412,31 +412,6 @@ function showAlert(message, type) {
     }, 3000);
 }
 
-async function showQRCode() {
-    const modal = new bootstrap.Modal(document.getElementById('qrCodeModal'));
-    modal.show();
-    
-    try {
-        const response = await fetch('/api/qr-code');
-        const data = await response.json();
-        
-        const container = document.getElementById('qr-code-container');
-        container.innerHTML = `
-            <img src="${data.qr_code}" alt="QR Code" class="img-fluid" style="max-width: 200px;">
-            <p class="mt-2"><strong>Mobile URL:</strong><br>
-            <small class="text-muted">${data.mobile_url}</small></p>
-        `;
-    } catch (error) {
-        console.error('Error generating QR code:', error);
-        const container = document.getElementById('qr-code-container');
-        container.innerHTML = `
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-triangle"></i>
-                Error generating QR code
-            </div>
-        `;
-    }
-}
 
 // Add haptic feedback for touch interactions
 function addHapticFeedback() {

@@ -23,11 +23,6 @@
                     <div class="status-indicator" id="system-status">
                         <i class="fas fa-circle"></i> Online
                     </div>
-                    <div class="qr-code-section mt-2">
-                        <button class="btn btn-sm btn-outline-light" onclick="showQRCode()">
-                            <i class="fas fa-qrcode"></i> QR Code
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -194,32 +189,6 @@
         </div>
     </div>
 
-    <!-- QR Code Modal -->
-    <div class="modal fade" id="qrCodeModal" tabindex="-1">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="fas fa-qrcode"></i> Scan to Add Items
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <div id="qr-code-container">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="mt-2">Generating QR Code...</p>
-                    </div>
-                    <div class="mt-3">
-                        <small class="text-muted">
-                            Scan this QR code with your mobile phone to add food items
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/virtual-keyboard.js') }}"></script>
