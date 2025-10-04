@@ -4,6 +4,9 @@ from flask_cors import CORS
 from datetime import datetime, timedelta
 import json
 import os
+import qrcode
+import io
+import base64
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -63,6 +66,27 @@ class SensorData(db.Model):
             'air_quality': self.air_quality
         }
 
+# Helper function to generate QR code
+def generate_qr_code(data):
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(data)
+    qr.make(fit=True)
+    
+    img = qr.make_image(fill_color="black", back_color="white")
+    
+    # Convert to base64 string
+    buffer = io.BytesIO()
+    img.save(buffer, format='PNG')
+    buffer.seek(0)
+    img_str = base64.b64encode(buffer.getvalue()).decode()
+    
+    return f"data:image/png;base64,{img_str}"
+
 # Routes
 @app.route('/')
 def dashboard():
@@ -75,6 +99,23 @@ def touch_interface():
 @app.route('/pi')
 def pi_display():
     return render_template('pi_display.html')
+
+@app.route('/mobile')
+def mobile_interface():
+    return render_template('mobile_interface.html')
+
+@app.route('/api/qr-code')
+def get_qr_code():
+    # Get the Pi's IP address
+    pi_ip = request.host.split(':')[0]
+    mobile_url = f"http://{pi_ip}:5000/mobile"
+    
+    qr_code_data = generate_qr_code(mobile_url)
+    
+    return jsonify({
+        'qr_code': qr_code_data,
+        'mobile_url': mobile_url
+    })
 
 @app.route('/api/inventory', methods=['GET'])
 def get_inventory():
