@@ -38,7 +38,7 @@ class FreezerSensors:
         self.flask_url = flask_url
         
         # Sensor configuration
-        self.co2_serial_port = '/dev/ttyUSB0'  # USB port for MH-Z19E
+        self.co2_serial_port = '/dev/serial0'  # UART port for MH-Z19E
         self.co2_baudrate = 9600
         
         # ADC configuration for MQ sensors
@@ -84,16 +84,24 @@ class FreezerSensors:
     
     def setup_co2_sensor(self):
         """Initialize CO2 sensor serial connection"""
-        try:
-            self.co2_serial = serial.Serial(
-                port=self.co2_serial_port,
-                baudrate=self.co2_baudrate,
-                timeout=1
-            )
-            logger.info("CO2 sensor serial connection established")
-        except Exception as e:
-            logger.error(f"Error setting up CO2 sensor: {e}")
-            self.co2_serial = None
+        # Try different serial ports
+        possible_ports = ['/dev/serial0', '/dev/ttyAMA0', '/dev/ttyUSB0', '/dev/ttyUSB1']
+        
+        for port in possible_ports:
+            try:
+                self.co2_serial = serial.Serial(
+                    port=port,
+                    baudrate=self.co2_baudrate,
+                    timeout=1
+                )
+                logger.info(f"CO2 sensor serial connection established on {port}")
+                return
+            except Exception as e:
+                logger.warning(f"Failed to connect to {port}: {e}")
+                continue
+        
+        logger.error("CO2 sensor not found on any port")
+        self.co2_serial = None
     
     def read_co2(self):
         """Read CO2 concentration from MH-Z19E sensor"""

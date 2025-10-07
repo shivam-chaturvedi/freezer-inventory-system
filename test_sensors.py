@@ -48,7 +48,7 @@ class SensorTester:
         print("Setting up MH-Z19E CO2 sensor...")
         
         # Try different serial ports
-        possible_ports = ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyAMA0', '/dev/serial0']
+        possible_ports = ['/dev/serial0', '/dev/ttyAMA0', '/dev/ttyUSB0', '/dev/ttyUSB1']
         
         for port in possible_ports:
             try:
