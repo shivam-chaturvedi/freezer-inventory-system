@@ -55,10 +55,17 @@ class SensorTester:
                 self.co2_serial = serial.Serial(
                     port=port,
                     baudrate=9600,
-                    timeout=2
+                    timeout=3,
+                    bytesize=serial.EIGHTBITS,
+                    parity=serial.PARITY_NONE,
+                    stopbits=serial.STOPBITS_ONE
                 )
                 print(f"✓ CO2 sensor connected on {port}")
-                time.sleep(2)  # Wait for sensor to stabilize
+                time.sleep(3)  # Wait for sensor to stabilize
+                
+                # Test the connection
+                self.co2_serial.flushInput()
+                self.co2_serial.flushOutput()
                 return
             except Exception as e:
                 print(f"✗ Failed to connect to {port}: {e}")
@@ -125,6 +132,20 @@ class SensorTester:
                     return co2_concentration
                 else:
                     print(f"✗ Checksum error: {checksum:02x} != {response[8]:02x}")
+                    print(f"  Raw response: {[hex(x) for x in response]}")
+                    # Try to read again with longer timeout
+                    time.sleep(0.5)
+                    self.co2_serial.write(b'\xff\x01\x86\x00\x00\x00\x00\x00\x79')
+                    time.sleep(0.2)
+                    response2 = self.co2_serial.read(9)
+                    if len(response2) == 9:
+                        checksum2 = sum(response2[1:8]) & 0xFF
+                        if checksum2 == response2[8]:
+                            co2_high = response2[2]
+                            co2_low = response2[3]
+                            co2_concentration = (co2_high * 256) + co2_low
+                            print(f"✓ CO2 Reading (retry): {co2_concentration} PPM")
+                            return co2_concentration
             else:
                 print(f"✗ Invalid response length: {len(response)} bytes")
                 print(f"  Raw response: {[hex(x) for x in response]}")
@@ -302,7 +323,11 @@ class SensorTester:
             if self.co2_serial:
                 self.co2_serial.close()
             if GPIO_AVAILABLE:
-                GPIO.cleanup()
+                try:
+                    GPIO.cleanup()
+                except RuntimeWarning:
+                    # Ignore GPIO cleanup warnings if no channels were set up
+                    pass
             print("Cleanup completed")
         except Exception as e:
             print(f"Error during cleanup: {e}")
