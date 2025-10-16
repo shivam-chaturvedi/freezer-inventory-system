@@ -9,3 +9,4 @@ RPi.GPIO==0.7.1
 supabase
 gunicorn
 psycopg2-binary
+qrcode
