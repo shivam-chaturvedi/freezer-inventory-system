@@ -89,7 +89,7 @@ function renderInventoryList() {
         container.innerHTML = `
             <div class="empty-inventory">
                 <i class="fas fa-box-open"></i>
-                <h4>No items in freezer</h4>
+                <h4>No items in fridge</h4>
                 <p>Add items using the "Add Item" button above</p>
             </div>
         `;

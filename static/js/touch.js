@@ -116,7 +116,7 @@ function renderInventoryList() {
         container.innerHTML = `
             <div class="empty-inventory">
                 <i class="fas fa-box-open"></i>
-                <h5>No items in freezer</h5>
+                <h5>No items in fridge</h5>
                 <p>Add items using the form on the left</p>
             </div>
         `;
@@ -244,7 +244,7 @@ async function addItem() {
 }
 
 async function removeItem(itemId) {
-    if (!confirm('Remove this item from the freezer?')) return;
+    if (!confirm('Remove this item from the fridge?')) return;
 
     try {
         const response = await fetch(`/api/inventory/${itemId}`, {

@@ -1,7 +1,16 @@
 .touch-interface {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ff914d 0%, #ff7043 100%);
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #000000;
+}
+
+.touch-interface * {
+    color: #000000;
+}
+
+.touch-interface .text-white * {
+    color: #ffffff !important;
 }
 
 .touch-interface .card {
@@ -19,14 +28,36 @@
 
 .touch-interface .form-control:focus,
 .touch-interface .form-select:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+    border-color: #6ba339;
+    box-shadow: 0 0 0 0.2rem rgba(107,163,57,0.25);
 }
 
 .touch-interface .btn {
     border-radius: 10px;
     font-weight: 600;
     transition: all 0.3s ease;
+}
+
+.touch-interface .btn-primary,
+.bg-primary {
+    background-color: #6ba339 !important;
+    border-color: #6ba339 !important;
+}
+
+.touch-interface .btn-primary:hover {
+    background-color: #5a8c30 !important;
+    border-color: #5a8c30 !important;
+}
+
+.touch-interface .btn-info,
+.bg-info {
+    background-color: #6ba339 !important;
+    border-color: #6ba339 !important;
+}
+
+.touch-interface .btn-info:hover {
+    background-color: #5a8c30 !important;
+    border-color: #5a8c30 !important;
 }
 
 .touch-interface .btn:hover {
@@ -40,18 +71,18 @@
 }
 
 .category-btn {
-    border: 2px solid #007bff;
+    border: 2px solid #6ba339;
     background: white;
-    color: #007bff;
+    color: #6ba339;
     transition: all 0.3s ease;
 }
 
 .category-btn:hover,
 .category-btn.active {
-    background: #007bff;
+    background: #6ba339;
     color: white;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+    box-shadow: 0 5px 15px rgba(107,163,57,0.3);
 }
 
 .touch-interface .card-header {
@@ -94,7 +125,7 @@
 }
 
 .category-meat { background-color: #ffebee; color: #c62828; }
-.category-dairy { background-color: #e3f2fd; color: #1565c0; }
+.category-dairy { background-color: #e8f5e8; color: #6ba339; }
 .category-vegetables { background-color: #e8f5e8; color: #2e7d32; }
 .category-fruits { background-color: #fff3e0; color: #ef6c00; }
 .category-seafood { background-color: #e0f2f1; color: #00695c; }
@@ -111,7 +142,7 @@
 }
 
 .sensor-card i {
-    color: #007bff;
+    color: #6ba339;
 }
 
 .sensor-card.warning {
@@ -179,7 +210,7 @@
     width: 20px;
     height: 20px;
     border: 3px solid #f3f3f3;
-    border-top: 3px solid #007bff;
+    border-top: 3px solid #6ba339;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }

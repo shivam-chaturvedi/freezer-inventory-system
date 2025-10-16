@@ -4,11 +4,15 @@ let sensorData = {};
 
 // Initialize dashboard
 document.addEventListener('DOMContentLoaded', function() {
-    updateCurrentTime();
-    setInterval(updateCurrentTime, 1000);
     loadInventory();
     loadSensorData();
     checkSpoilage();
+    
+    // Setup form submission
+    document.getElementById('quick-add-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        addItem();
+    });
     
     // Auto-refresh every 30 seconds
     setInterval(() => {
@@ -17,20 +21,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 30000);
 });
 
-function updateCurrentTime() {
-    const now = new Date();
-    const timeString = now.toLocaleTimeString();
-    document.getElementById('current-time').textContent = timeString;
-}
-
 async function loadInventory() {
     try {
         const response = await fetch('/api/inventory');
         inventoryData = await response.json();
-        renderInventoryTable();
+        renderInventoryList();
     } catch (error) {
         console.error('Error loading inventory:', error);
-        showAlert('Error loading inventory data', 'danger');
+        showToast('Error loading inventory data', 'danger');
     }
 }
 
@@ -44,192 +42,172 @@ async function loadSensorData() {
     }
 }
 
+function renderInventoryList() {
+    const container = document.getElementById('inventory-list');
+    
+    if (inventoryData.length === 0) {
+        container.innerHTML = `
+            <div class="empty-inventory">
+                <i class="fas fa-box-open"></i>
+                <h5>No items in fridge</h5>
+                <p>Add items using the form</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Sort items by status and name
+    const sortedItems = inventoryData.sort((a, b) => {
+        if (a.is_spoiled !== b.is_spoiled) {
+            return b.is_spoiled - a.is_spoiled;
+        }
+        return a.name.localeCompare(b.name);
+    });
+
+    container.innerHTML = sortedItems.map(item => {
+        const addedDate = new Date(item.added_date);
+        const expiryDate = item.expiry_date ? new Date(item.expiry_date) : null;
+        
+        let statusClass = '';
+        let statusText = '';
+        let statusIcon = '';
+        
+        if (item.is_spoiled) {
+            statusClass = 'spoiled';
+            statusText = 'Spoiled';
+            statusIcon = 'fas fa-exclamation-triangle status-spoiled';
+        } else if (expiryDate) {
+            const daysUntilExpiry = Math.ceil((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
+            if (daysUntilExpiry < 0) {
+                statusClass = 'spoiled';
+                statusText = 'Expired';
+                statusIcon = 'fas fa-times-circle status-spoiled';
+            } else if (daysUntilExpiry <= 3) {
+                statusClass = 'expiring';
+                statusText = 'Expires Soon';
+                statusIcon = 'fas fa-clock status-expiring';
+            } else {
+                statusClass = '';
+                statusText = 'Fresh';
+                statusIcon = 'fas fa-check-circle status-fresh';
+            }
+        } else {
+            statusClass = '';
+            statusText = 'Fresh';
+            statusIcon = 'fas fa-check-circle status-fresh';
+        }
+
+        return `
+            <div class="inventory-item ${statusClass}">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-quantity">${item.quantity} ${item.unit}</div>
+                        ${item.category ? `<div class="item-category category-${item.category}">${getCategoryEmoji(item.category)} ${item.category}</div>` : ''}
+                        <div class="item-dates">
+                            Added: ${addedDate.toLocaleDateString()}
+                            ${expiryDate ? ` | Expires: ${expiryDate.toLocaleDateString()}` : ''}
+                        </div>
+                        <div class="item-status">
+                            <i class="${statusIcon}"></i>
+                            ${statusText}
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteItem(${item.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function getCategoryEmoji(category) {
+    const emojis = {
+        'meat': '🥩',
+        'dairy': '🥛',
+        'vegetables': '🥬',
+        'fruits': '🍎',
+        'seafood': '🐟',
+        'frozen': '❄️',
+        'other': '📦'
+    };
+    return emojis[category] || '📦';
+}
+
 function updateSensorDisplay() {
     // Update CO2 level
     const co2Element = document.getElementById('co2-value');
-    const co2Card = document.getElementById('co2-card');
     if (sensorData.co2_ppm !== undefined) {
         co2Element.textContent = `${sensorData.co2_ppm} PPM`;
-        
-        // Color code based on CO2 level
-        co2Card.className = 'card text-white';
-        if (sensorData.co2_ppm > 1000) {
-            co2Card.classList.add('danger');
-        } else if (sensorData.co2_ppm > 500) {
-            co2Card.classList.add('warning');
-        } else {
-            co2Card.classList.add('success');
-        }
     } else {
         co2Element.textContent = '-- PPM';
     }
 
     // Update ammonia level
     const ammoniaElement = document.getElementById('ammonia-value');
-    const ammoniaCard = document.getElementById('ammonia-card');
     if (sensorData.ammonia_ppm !== undefined) {
         ammoniaElement.textContent = `${sensorData.ammonia_ppm.toFixed(2)} PPM`;
-        
-        // Color code based on ammonia level
-        ammoniaCard.className = 'card text-white';
-        if (sensorData.ammonia_ppm > 25) {
-            ammoniaCard.classList.add('danger');
-        } else if (sensorData.ammonia_ppm > 10) {
-            ammoniaCard.classList.add('warning');
-        } else {
-            ammoniaCard.classList.add('success');
-        }
     } else {
         ammoniaElement.textContent = '-- PPM';
     }
 
     // Update H2S level
     const h2sElement = document.getElementById('h2s-value');
-    const h2sCard = document.getElementById('h2s-card');
     if (sensorData.h2s_ppm !== undefined) {
         h2sElement.textContent = `${sensorData.h2s_ppm.toFixed(2)} PPM`;
-        
-        // Color code based on H2S level
-        h2sCard.className = 'card text-white';
-        if (sensorData.h2s_ppm > 10) {
-            h2sCard.classList.add('danger');
-        } else if (sensorData.h2s_ppm > 5) {
-            h2sCard.classList.add('warning');
-        } else {
-            h2sCard.classList.add('success');
-        }
     } else {
         h2sElement.textContent = '-- PPM';
     }
 
     // Update air quality
     const airQualityElement = document.getElementById('air-quality-value');
-    const airQualityCard = document.getElementById('air-quality-card');
     if (sensorData.air_quality !== undefined) {
         airQualityElement.textContent = sensorData.air_quality.toUpperCase();
-        
-        // Color code based on air quality
-        airQualityCard.className = 'card text-white';
-        if (sensorData.air_quality === 'poor') {
-            airQualityCard.classList.add('danger');
-        } else if (sensorData.air_quality === 'moderate') {
-            airQualityCard.classList.add('warning');
-        } else if (sensorData.air_quality === 'good') {
-            airQualityCard.classList.add('success');
-        }
     } else {
         airQualityElement.textContent = '--';
     }
 
     // Update door status
     const doorElement = document.getElementById('door-status');
-    const doorCard = document.getElementById('door-card');
     if (sensorData.door_open !== undefined) {
         doorElement.textContent = sensorData.door_open ? 'OPEN' : 'CLOSED';
-        doorCard.className = 'card text-white';
-        if (sensorData.door_open) {
-            doorCard.classList.add('danger');
-        } else {
-            doorCard.classList.add('success');
-        }
     } else {
         doorElement.textContent = '--';
     }
-}
-
-function renderInventoryTable() {
-    const tbody = document.getElementById('inventory-tbody');
-    tbody.innerHTML = '';
-
-    if (inventoryData.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="7" class="text-center text-muted py-4">
-                    <i class="fas fa-box-open fa-2x mb-2"></i><br>
-                    No items in inventory
-                </td>
-            </tr>
-        `;
-        return;
-    }
-
-    inventoryData.forEach(item => {
-        const row = document.createElement('tr');
-        
-        // Determine item status
-        let statusClass = 'fresh-item';
-        let statusText = 'Fresh';
-        let statusIcon = 'status-fresh';
-        
-        if (item.is_spoiled) {
-            statusClass = 'spoiled-item';
-            statusText = 'Spoiled';
-            statusIcon = 'status-spoiled';
-        } else if (item.expiry_date) {
-            const expiryDate = new Date(item.expiry_date);
-            const daysUntilExpiry = Math.ceil((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
-            if (daysUntilExpiry <= 0) {
-                statusClass = 'spoiled-item';
-                statusText = 'Expired';
-                statusIcon = 'status-spoiled';
-            } else if (daysUntilExpiry <= 3) {
-                statusClass = 'expiring-soon';
-                statusText = 'Expiring Soon';
-                statusIcon = 'status-expiring';
-            }
-        }
-
-        row.className = statusClass;
-        row.innerHTML = `
-            <td>
-                <strong>${item.name}</strong>
-                ${item.notes ? `<br><small class="text-muted">${item.notes}</small>` : ''}
-            </td>
-            <td>${item.quantity} ${item.unit}</td>
-            <td>
-                <span class="badge bg-secondary">${item.category || 'Uncategorized'}</span>
-            </td>
-            <td>${new Date(item.added_date).toLocaleDateString()}</td>
-            <td>${item.expiry_date ? new Date(item.expiry_date).toLocaleDateString() : 'N/A'}</td>
-            <td>
-                <span class="${statusIcon}"></span>
-                ${statusText}
-            </td>
-            <td>
-                <button class="btn btn-sm btn-outline-primary me-1" onclick="editItem(${item.id})">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-danger" onclick="deleteItem(${item.id})">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        `;
-        
-        tbody.appendChild(row);
-    });
 
     // Update spoiled count
     const spoiledCount = inventoryData.filter(item => item.is_spoiled).length;
     document.getElementById('spoiled-count').textContent = spoiledCount;
-}
 
-function showAddItemModal() {
-    const modal = new bootstrap.Modal(document.getElementById('addItemModal'));
-    modal.show();
+    // Update timestamp
+    const timestampElement = document.getElementById('sensor-timestamp');
+    if (sensorData.timestamp) {
+        const date = new Date(sensorData.timestamp);
+        timestampElement.textContent = `Last updated: ${date.toLocaleString()}`;
+    } else {
+        timestampElement.textContent = 'Last updated: --';
+    }
 }
 
 async function addItem() {
-    const form = document.getElementById('add-item-form');
-    const formData = new FormData(form);
+    const form = document.getElementById('quick-add-form');
     
     const itemData = {
-        name: document.getElementById('item-name').value,
+        name: document.getElementById('item-name').value.trim(),
         quantity: parseInt(document.getElementById('item-quantity').value),
         unit: document.getElementById('item-unit').value,
         category: document.getElementById('item-category').value,
         notes: document.getElementById('item-notes').value,
         expiry_date: document.getElementById('item-expiry').value || null
     };
+
+    if (!itemData.name || !itemData.quantity) {
+        showToast('Please fill in all required fields', 'warning');
+        return;
+    }
 
     try {
         const response = await fetch('/api/inventory', {
@@ -241,49 +219,15 @@ async function addItem() {
         });
 
         if (response.ok) {
-            const modal = bootstrap.Modal.getInstance(document.getElementById('addItemModal'));
-            modal.hide();
             form.reset();
             loadInventory();
-            showAlert('Item added successfully!', 'success');
+            showToast('Item added successfully!', 'success');
         } else {
             throw new Error('Failed to add item');
         }
     } catch (error) {
         console.error('Error adding item:', error);
-        showAlert('Error adding item', 'danger');
-    }
-}
-
-async function editItem(itemId) {
-    const item = inventoryData.find(i => i.id === itemId);
-    if (!item) return;
-
-    // For now, just show an alert. In a real implementation, you'd show an edit modal
-    const newQuantity = prompt(`Edit quantity for ${item.name}:`, item.quantity);
-    if (newQuantity !== null && !isNaN(newQuantity)) {
-        try {
-            const response = await fetch(`/api/inventory/${itemId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    ...item,
-                    quantity: parseInt(newQuantity)
-                })
-            });
-
-            if (response.ok) {
-                loadInventory();
-                showAlert('Item updated successfully!', 'success');
-            } else {
-                throw new Error('Failed to update item');
-            }
-        } catch (error) {
-            console.error('Error updating item:', error);
-            showAlert('Error updating item', 'danger');
-        }
+        showToast('Error adding item', 'danger');
     }
 }
 
@@ -297,13 +241,13 @@ async function deleteItem(itemId) {
 
         if (response.ok) {
             loadInventory();
-            showAlert('Item deleted successfully!', 'success');
+            showToast('Item deleted successfully!', 'success');
         } else {
             throw new Error('Failed to delete item');
         }
     } catch (error) {
         console.error('Error deleting item:', error);
-        showAlert('Error deleting item', 'danger');
+        showToast('Error deleting item', 'danger');
     }
 }
 
@@ -313,21 +257,16 @@ async function checkSpoilage() {
         const result = await response.json();
         
         if (result.spoiled_items.length > 0) {
-            showAlert(`Spoilage detected! ${result.spoiled_items.length} items may be spoiled.`, 'warning');
-        }
-        
-        if (result.temperature_warning) {
-            showAlert('Temperature warning! Freezer temperature is above safe levels.', 'danger');
+            showToast(`Warning: ${result.spoiled_items.length} items may be spoiled!`, 'warning');
         }
         
         if (result.door_open) {
-            showAlert('Door is open! Please close the freezer door.', 'warning');
+            showToast('Door is open! Please close the fridge door.', 'warning');
         }
         
-        loadInventory(); // Refresh to show updated spoilage status
+        loadInventory();
     } catch (error) {
         console.error('Error checking spoilage:', error);
-        showAlert('Error checking spoilage', 'danger');
     }
 }
 
@@ -335,25 +274,31 @@ function refreshData() {
     loadInventory();
     loadSensorData();
     checkSpoilage();
-    showAlert('Data refreshed!', 'info');
+    showToast('Data refreshed!', 'success');
 }
 
-function showAlert(message, type) {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-    alertDiv.innerHTML = `
+function showToast(message, type) {
+    const toastDiv = document.createElement('div');
+    toastDiv.className = `alert alert-${type} alert-dismissible fade show toast-notification`;
+    toastDiv.innerHTML = `
         ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
     `;
     
-    document.body.appendChild(alertDiv);
+    document.body.appendChild(toastDiv);
     
-    // Auto-remove after 5 seconds
     setTimeout(() => {
-        if (alertDiv.parentNode) {
-            alertDiv.parentNode.removeChild(alertDiv);
+        if (toastDiv.parentNode) {
+            toastDiv.remove();
         }
-    }, 5000);
+    }, 3000);
 }
 
+// Add haptic feedback for mobile
+document.addEventListener('click', function(e) {
+    if (e.target.matches('button, .btn')) {
+        if ('vibrate' in navigator) {
+            navigator.vibrate(50);
+        }
+    }
+});

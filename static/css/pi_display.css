@@ -24,9 +24,9 @@ input[type="text"]:focus,
 input[type="number"]:focus, 
 textarea:focus, 
 select:focus {
-    border-color: #007bff;
+    border-color: #6ba339;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    box-shadow: 0 0 0 3px rgba(107, 163, 57, 0.25);
 }
 
 /* Ensure virtual keyboard works properly */
@@ -55,7 +55,7 @@ textarea[inputmode="text"] {
 }
 
 .keyboard-header {
-    background: #007bff;
+    background: #6ba339;
     color: white;
     padding: 10px 15px;
     display: flex;
@@ -117,9 +117,9 @@ textarea[inputmode="text"] {
 
 .key:active,
 .key.key-pressed {
-    background: #007bff;
+    background: #6ba339;
     color: white;
-    border-color: #0056b3;
+    border-color: #5a8c30;
     transform: scale(0.95);
 }
 
@@ -159,10 +159,18 @@ textarea:focus {
 
 body.pi-display {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ff914d 0%, #ff7043 100%);
     height: 100vh;
     overflow: hidden;
-    color: #333;
+    color: #000000;
+}
+
+body.pi-display * {
+    color: #000000;
+}
+
+body.pi-display .text-white * {
+    color: #ffffff !important;
 }
 
 /* Header */
@@ -182,7 +190,7 @@ body.pi-display {
 }
 
 .display-title i {
-    color: #3498db;
+    color: #6ba339;
     margin-right: 10px;
 }
 
@@ -237,7 +245,7 @@ body.pi-display {
 }
 
 .section-header h3 i {
-    color: #3498db;
+    color: #6ba339;
     margin-right: 10px;
 }
 
@@ -253,6 +261,26 @@ body.pi-display {
     border-radius: 8px;
     border: none;
     transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #6ba339 !important;
+    border-color: #6ba339 !important;
+}
+
+.btn-primary:hover {
+    background-color: #5a8c30 !important;
+    border-color: #5a8c30 !important;
+}
+
+.btn-info {
+    background-color: #6ba339 !important;
+    border-color: #6ba339 !important;
+}
+
+.btn-info:hover {
+    background-color: #5a8c30 !important;
+    border-color: #5a8c30 !important;
 }
 
 .inventory-actions .btn:hover {
@@ -280,7 +308,7 @@ body.pi-display {
 .inventory-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    border-color: #3498db;
+    border-color: #6ba339;
 }
 
 .inventory-item.spoiled {
@@ -332,7 +360,7 @@ body.pi-display {
 }
 
 .category-meat { background: #e74c3c; }
-.category-dairy { background: #3498db; }
+.category-dairy { background: #6ba339; }
 .category-vegetables { background: #27ae60; }
 .category-fruits { background: #f39c12; }
 .category-seafood { background: #16a085; }
@@ -382,7 +410,7 @@ body.pi-display {
 }
 
 .sensors-section h4 i {
-    color: #3498db;
+    color: #6ba339;
     margin-right: 8px;
 }
 
@@ -421,7 +449,7 @@ body.pi-display {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: #3498db;
+    background: #6ba339;
     display: flex;
     align-items: center;
     justify-content: center;
