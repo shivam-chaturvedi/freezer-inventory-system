@@ -17,11 +17,32 @@
                 <img src="{{ url_for('static', filename='images/logo.jpeg') }}" alt="Logo" style="height: 35px; margin-right: 10px; border-radius: 5px; vertical-align: middle;"> 
                 Fridge Inventory
             </span>
-            <button class="btn btn-success btn-sm" onclick="refreshData()">
-                <i class="fas fa-sync-alt"></i>
-            </button>
+            <div>
+                <button class="btn btn-light btn-sm me-2" data-bs-toggle="modal" data-bs-target="#qrModal" style="padding: 5px 10px;">
+                    <i class="fas fa-qrcode"></i>
+                </button>
+                <button class="btn btn-success btn-sm" onclick="refreshData()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
         </div>
     </nav>
+    
+    <!-- QR Code Modal -->
+    <div class="modal fade" id="qrModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #ff914d; color: white;">
+                    <h5 class="modal-title" style="color: white;">Scan QR Code</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center" style="padding: 30px;">
+                    <img src="{{ url_for('static', filename='images/qr.png') }}" alt="QR Code" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <p style="margin-top: 20px; color: #000000; font-weight: 500;">Scan to access your Fridge Inventory</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="container-fluid p-3">
         <!-- Main Horizontal Scrollable Container -->
