@@ -18,6 +18,9 @@
                 Fridge
             </span>
             <div style="display: flex; gap: 2px;">
+                <button class="btn btn-success btn-sm" onclick="openAddItemModal()" style="padding: 2px 6px; font-size: 0.5rem; line-height: 1;">
+                    <i class="fas fa-plus" style="font-size: 0.5rem;"></i> Add Item
+                </button>
                 <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#qrModal" style="padding: 2px 4px; font-size: 0.5rem; line-height: 1;">
                     <i class="fas fa-qrcode" style="font-size: 0.5rem;"></i>
                 </button>
@@ -44,77 +47,120 @@
         </div>
     </div>
 
-    <div class="container-fluid" style="padding: 2px;">
-        <!-- 5" Display - 3 Columns No Scrolling -->
-        <div class="horizontal-scroll-container">
-            
-            <!-- Section 1: Add Item -->
-            <div class="scroll-section">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <h5 class="mb-0"><i class="fas fa-plus-circle"></i> Add Item</h5>
+    <!-- Add/Edit Volunteer Modal Overlay -->
+    <div id="volunteerModal" class="add-item-modal" style="display: none;">
+        <div class="add-item-modal-content">
+            <div class="add-item-modal-header">
+                <h5 class="mb-0" id="volunteer-modal-title"><i class="fas fa-user-plus"></i> Add Volunteer</h5>
+                <button type="button" class="btn-close-modal" onclick="closeVolunteerModal()" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="add-item-modal-body">
+                <form id="volunteer-form">
+                    <input type="hidden" id="volunteer-id" value="">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" id="volunteer-name" required>
                     </div>
-                    <div class="card-body">
-                        <form id="quick-add-form">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="volunteer-email" required>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success flex-grow-1" id="volunteer-submit-btn">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeVolunteerModal()">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Item Modal Overlay -->
+    <div id="addItemModal" class="add-item-modal" style="display: none;">
+        <div class="add-item-modal-content">
+            <div class="add-item-modal-header">
+                <h5 class="mb-0"><i class="fas fa-plus-circle"></i> Add New Item</h5>
+                <button type="button" class="btn-close-modal" onclick="closeAddItemModal()" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="add-item-modal-body">
+                <form id="quick-add-form">
+                    <div class="mb-3">
+                        <label class="form-label">Item Name</label>
+                        <input type="text" class="form-control" id="item-name" required>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-6">
                             <div class="mb-3">
-                                <label class="form-label">Item Name</label>
-                                <input type="text" class="form-control" id="item-name" required>
+                                <label class="form-label">Quantity</label>
+                                <input type="number" class="form-control" id="item-quantity" required>
                             </div>
-                            
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Quantity</label>
-                                        <input type="number" class="form-control" id="item-quantity" required>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Unit</label>
-                                        <select class="form-select" id="item-unit" required>
-                                            <option value="pieces">Pieces</option>
-                                            <option value="kg">Kg</option>
-                                            <option value="g">Grams</option>
-                                            <option value="liters">Liters</option>
-                                            <option value="packages">Packages</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            
+                        </div>
+                        <div class="col-6">
                             <div class="mb-3">
-                                <label class="form-label">Category</label>
-                                <select class="form-select" id="item-category">
-                                    <option value="">Select</option>
-                                    <option value="meat">🥩 Meat</option>
-                                    <option value="dairy">🥛 Dairy</option>
-                                    <option value="vegetables">🥬 Vegetables</option>
-                                    <option value="fruits">🍎 Fruits</option>
-                                    <option value="seafood">🐟 Seafood</option>
-                                    <option value="frozen">❄️ Frozen</option>
-                                    <option value="other">📦 Other</option>
+                                <label class="form-label">Unit</label>
+                                <select class="form-select" id="item-unit" required>
+                                    <option value="pieces">Pieces</option>
+                                    <option value="kg">Kg</option>
+                                    <option value="g">Grams</option>
+                                    <option value="liters">Liters</option>
+                                    <option value="packages">Packages</option>
                                 </select>
                             </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Expiry Date</label>
-                                <input type="date" class="form-control" id="item-expiry">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Notes</label>
-                                <textarea class="form-control" id="item-notes" rows="2"></textarea>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-success w-100">
-                                <i class="fas fa-save"></i> Add to Fridge
-                            </button>
-                        </form>
+                        </div>
                     </div>
-                </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select class="form-select" id="item-category">
+                            <option value="">Select</option>
+                            <option value="meat">🥩 Meat</option>
+                            <option value="dairy">🥛 Dairy</option>
+                            <option value="vegetables">🥬 Vegetables</option>
+                            <option value="fruits">🍎 Fruits</option>
+                            <option value="seafood">🐟 Seafood</option>
+                            <option value="frozen">❄️ Frozen</option>
+                            <option value="other">📦 Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Expiry Date</label>
+                        <input type="date" class="form-control" id="item-expiry">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-control" id="item-notes" rows="2"></textarea>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success flex-grow-1">
+                            <i class="fas fa-save"></i> Add to Fridge
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeAddItemModal()">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
             </div>
+        </div>
+    </div>
 
-            <!-- Section 2: Current Inventory -->
+    <div class="container-fluid" style="padding: 2px;">
+        <!-- 5" Display - 2 Columns Layout -->
+        <div class="horizontal-scroll-container">
+            
+            <!-- Section 1: Current Inventory -->
             <div class="scroll-section">
                 <div class="card h-100">
                     <div class="card-header">
@@ -128,83 +174,101 @@
                 </div>
             </div>
 
-            <!-- Section 3: Sensor Data -->
+            <!-- Section 2: Right Column (Sensors + Volunteers) -->
             <div class="scroll-section">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <h5 class="mb-0"><i class="fas fa-chart-line"></i> Sensor Data</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="sensor-grid">
-                            <!-- CO2 Level -->
-                            <div class="sensor-card">
-                                <div class="sensor-icon bg-primary">
-                                    <i class="fas fa-wind"></i>
+                <div class="right-column-container">
+                    <!-- Sensor Data (Compact) -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-chart-line"></i> Sensors</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="sensor-grid-compact">
+                                <!-- CO2 Level -->
+                                <div class="sensor-card-compact">
+                                    <div class="sensor-icon-compact bg-primary">
+                                        <i class="fas fa-wind"></i>
+                                    </div>
+                                    <div class="sensor-info-compact">
+                                        <div class="sensor-label-compact">CO2</div>
+                                        <div class="sensor-value-compact" id="co2-value">--</div>
+                                    </div>
                                 </div>
-                                <div class="sensor-info">
-                                    <div class="sensor-label">CO2 Level</div>
-                                    <div class="sensor-value" id="co2-value">-- PPM</div>
+
+                                <!-- Ammonia -->
+                                <div class="sensor-card-compact">
+                                    <div class="sensor-icon-compact bg-warning">
+                                        <i class="fas fa-skull-crossbones"></i>
+                                    </div>
+                                    <div class="sensor-info-compact">
+                                        <div class="sensor-label-compact">NH3</div>
+                                        <div class="sensor-value-compact" id="ammonia-value">--</div>
+                                    </div>
+                                </div>
+
+                                <!-- H2S Level -->
+                                <div class="sensor-card-compact">
+                                    <div class="sensor-icon-compact bg-danger">
+                                        <i class="fas fa-biohazard"></i>
+                                    </div>
+                                    <div class="sensor-info-compact">
+                                        <div class="sensor-label-compact">H2S</div>
+                                        <div class="sensor-value-compact" id="h2s-value">--</div>
+                                    </div>
+                                </div>
+
+                                <!-- Air Quality -->
+                                <div class="sensor-card-compact">
+                                    <div class="sensor-icon-compact bg-success">
+                                        <i class="fas fa-leaf"></i>
+                                    </div>
+                                    <div class="sensor-info-compact">
+                                        <div class="sensor-label-compact">Air</div>
+                                        <div class="sensor-value-compact" id="air-quality-value">--</div>
+                                    </div>
+                                </div>
+
+                                <!-- Door Status -->
+                                <div class="sensor-card-compact">
+                                    <div class="sensor-icon-compact bg-info">
+                                        <i class="fas fa-door-open"></i>
+                                    </div>
+                                    <div class="sensor-info-compact">
+                                        <div class="sensor-label-compact">Door</div>
+                                        <div class="sensor-value-compact" id="door-status">--</div>
+                                    </div>
+                                </div>
+
+                                <!-- Spoiled Items -->
+                                <div class="sensor-card-compact">
+                                    <div class="sensor-icon-compact bg-danger">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="sensor-info-compact">
+                                        <div class="sensor-label-compact">Spoiled</div>
+                                        <div class="sensor-value-compact" id="spoiled-count">0</div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Ammonia -->
-                            <div class="sensor-card">
-                                <div class="sensor-icon bg-warning">
-                                    <i class="fas fa-skull-crossbones"></i>
-                                </div>
-                                <div class="sensor-info">
-                                    <div class="sensor-label">Ammonia</div>
-                                    <div class="sensor-value" id="ammonia-value">-- PPM</div>
-                                </div>
-                            </div>
-
-                            <!-- H2S Level -->
-                            <div class="sensor-card">
-                                <div class="sensor-icon bg-danger">
-                                    <i class="fas fa-biohazard"></i>
-                                </div>
-                                <div class="sensor-info">
-                                    <div class="sensor-label">H2S Level</div>
-                                    <div class="sensor-value" id="h2s-value">-- PPM</div>
-                                </div>
-                            </div>
-
-                            <!-- Air Quality -->
-                            <div class="sensor-card">
-                                <div class="sensor-icon bg-success">
-                                    <i class="fas fa-leaf"></i>
-                                </div>
-                                <div class="sensor-info">
-                                    <div class="sensor-label">Air Quality</div>
-                                    <div class="sensor-value" id="air-quality-value">--</div>
-                                </div>
-                            </div>
-
-                            <!-- Door Status -->
-                            <div class="sensor-card">
-                                <div class="sensor-icon bg-info">
-                                    <i class="fas fa-door-open"></i>
-                                </div>
-                                <div class="sensor-info">
-                                    <div class="sensor-label">Door Status</div>
-                                    <div class="sensor-value" id="door-status">--</div>
-                                </div>
-                            </div>
-
-                            <!-- Spoiled Items -->
-                            <div class="sensor-card">
-                                <div class="sensor-icon bg-danger">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                </div>
-                                <div class="sensor-info">
-                                    <div class="sensor-label">Spoiled Items</div>
-                                    <div class="sensor-value" id="spoiled-count">0</div>
-                                </div>
+                            <div class="mt-2">
+                                <small class="text-muted" id="sensor-timestamp">Updated: --</small>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="mt-3">
-                            <small class="text-muted" id="sensor-timestamp">Last updated: --</small>
+                    <!-- Volunteers Section -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-users"></i> Volunteers</h5>
+                            <button class="btn btn-success btn-sm" onclick="openAddVolunteerModal()" style="padding: 1px 4px; font-size: 0.45rem;">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="volunteers-list" class="volunteers-list">
+                                <!-- Volunteers will be loaded here -->
+                            </div>
                         </div>
                     </div>
                 </div>

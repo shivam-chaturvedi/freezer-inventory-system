@@ -1,12 +1,14 @@
 // Dashboard JavaScript
 let inventoryData = [];
 let sensorData = {};
+let volunteersData = [];
 
 // Initialize dashboard
 document.addEventListener('DOMContentLoaded', function() {
     loadInventory();
     loadSensorData();
     checkSpoilage();
+    loadVolunteers();
     
     // Setup form submission
     document.getElementById('quick-add-form').addEventListener('submit', function(e) {
@@ -14,12 +16,60 @@ document.addEventListener('DOMContentLoaded', function() {
         addItem();
     });
     
+    // Close modal when clicking outside
+    document.getElementById('addItemModal').addEventListener('click', function(e) {
+        if (e.target.id === 'addItemModal') {
+            closeAddItemModal();
+        }
+    });
+    
+    // Setup volunteer form submission
+    document.getElementById('volunteer-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        saveVolunteer();
+    });
+    
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const itemModal = document.getElementById('addItemModal');
+            const volunteerModal = document.getElementById('volunteerModal');
+            if (itemModal && itemModal.style.display === 'flex') {
+                closeAddItemModal();
+            }
+            if (volunteerModal && volunteerModal.style.display === 'flex') {
+                closeVolunteerModal();
+            }
+        }
+    });
+    
+    // Close volunteer modal when clicking outside
+    document.getElementById('volunteerModal').addEventListener('click', function(e) {
+        if (e.target.id === 'volunteerModal') {
+            closeVolunteerModal();
+        }
+    });
+    
     // Auto-refresh every 30 seconds
     setInterval(() => {
         loadInventory();
         loadSensorData();
+        loadVolunteers();
     }, 30000);
 });
+
+// Modal functions
+function openAddItemModal() {
+    document.getElementById('addItemModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeAddItemModal() {
+    document.getElementById('addItemModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    // Reset form
+    document.getElementById('quick-add-form').reset();
+}
 
 async function loadInventory() {
     try {
@@ -138,39 +188,40 @@ function getCategoryEmoji(category) {
 }
 
 function updateSensorDisplay() {
-    // Update CO2 level
+    // Update CO2 level (compact format)
     const co2Element = document.getElementById('co2-value');
     if (sensorData.co2_ppm !== undefined) {
-        co2Element.textContent = `${sensorData.co2_ppm} PPM`;
+        co2Element.textContent = `${sensorData.co2_ppm}`;
     } else {
-        co2Element.textContent = '-- PPM';
+        co2Element.textContent = '--';
     }
 
-    // Update ammonia level
+    // Update ammonia level (compact format)
     const ammoniaElement = document.getElementById('ammonia-value');
     if (sensorData.ammonia_ppm !== undefined) {
-        ammoniaElement.textContent = `${sensorData.ammonia_ppm.toFixed(2)} PPM`;
+        ammoniaElement.textContent = `${sensorData.ammonia_ppm.toFixed(1)}`;
     } else {
-        ammoniaElement.textContent = '-- PPM';
+        ammoniaElement.textContent = '--';
     }
 
-    // Update H2S level
+    // Update H2S level (compact format)
     const h2sElement = document.getElementById('h2s-value');
     if (sensorData.h2s_ppm !== undefined) {
-        h2sElement.textContent = `${sensorData.h2s_ppm.toFixed(2)} PPM`;
+        h2sElement.textContent = `${sensorData.h2s_ppm.toFixed(1)}`;
     } else {
-        h2sElement.textContent = '-- PPM';
+        h2sElement.textContent = '--';
     }
 
-    // Update air quality
+    // Update air quality (compact format)
     const airQualityElement = document.getElementById('air-quality-value');
     if (sensorData.air_quality !== undefined) {
-        airQualityElement.textContent = sensorData.air_quality.toUpperCase();
+        const airQuality = sensorData.air_quality.toUpperCase();
+        airQualityElement.textContent = airQuality.length > 4 ? airQuality.substring(0, 4) : airQuality;
     } else {
         airQualityElement.textContent = '--';
     }
 
-    // Update door status
+    // Update door status (compact format)
     const doorElement = document.getElementById('door-status');
     if (sensorData.door_open !== undefined) {
         doorElement.textContent = sensorData.door_open ? 'OPEN' : 'CLOSED';
@@ -182,13 +233,14 @@ function updateSensorDisplay() {
     const spoiledCount = inventoryData.filter(item => item.is_spoiled).length;
     document.getElementById('spoiled-count').textContent = spoiledCount;
 
-    // Update timestamp
+    // Update timestamp (compact format)
     const timestampElement = document.getElementById('sensor-timestamp');
     if (sensorData.timestamp) {
         const date = new Date(sensorData.timestamp);
-        timestampElement.textContent = `Last updated: ${date.toLocaleString()}`;
+        const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        timestampElement.textContent = `Updated: ${timeStr}`;
     } else {
-        timestampElement.textContent = 'Last updated: --';
+        timestampElement.textContent = 'Updated: --';
     }
 }
 
@@ -220,6 +272,7 @@ async function addItem() {
 
         if (response.ok) {
             form.reset();
+            closeAddItemModal();
             loadInventory();
             showToast('Item added successfully!', 'success');
         } else {
@@ -270,10 +323,159 @@ async function checkSpoilage() {
     }
 }
 
+async function loadVolunteers() {
+    try {
+        const response = await fetch('/api/volunteers');
+        if (response.ok) {
+            volunteersData = await response.json();
+            renderVolunteers();
+        } else {
+            console.error('Error loading volunteers:', response.statusText);
+            showToast('Error loading volunteers', 'danger');
+        }
+    } catch (error) {
+        console.error('Error loading volunteers:', error);
+        showToast('Error loading volunteers', 'danger');
+    }
+}
+
+function renderVolunteers() {
+    const container = document.getElementById('volunteers-list');
+    
+    if (volunteersData.length === 0) {
+        container.innerHTML = `
+            <div class="empty-volunteers">
+                <i class="fas fa-users"></i>
+                <p>No volunteers</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = volunteersData.map(volunteer => {
+        // Get initials for badge
+        const initials = volunteer.name.split(' ')
+            .map(n => n[0])
+            .join('')
+            .toUpperCase()
+            .substring(0, 2);
+        
+        return `
+            <div class="volunteer-item">
+                <div class="volunteer-badge">${initials}</div>
+                <div class="volunteer-info">
+                    <div class="volunteer-name">${volunteer.name}</div>
+                    <div class="volunteer-email">${volunteer.email}</div>
+                </div>
+                <div class="volunteer-actions">
+                    <button class="volunteer-action-btn edit" onclick="editVolunteer(${volunteer.id})" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="volunteer-action-btn delete" onclick="deleteVolunteer(${volunteer.id})" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Volunteer Modal Functions
+function openAddVolunteerModal() {
+    document.getElementById('volunteer-id').value = '';
+    document.getElementById('volunteer-name').value = '';
+    document.getElementById('volunteer-email').value = '';
+    document.getElementById('volunteer-modal-title').innerHTML = '<i class="fas fa-user-plus"></i> Add Volunteer';
+    document.getElementById('volunteer-submit-btn').innerHTML = '<i class="fas fa-save"></i> Save';
+    document.getElementById('volunteerModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeVolunteerModal() {
+    document.getElementById('volunteerModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    document.getElementById('volunteer-form').reset();
+    document.getElementById('volunteer-id').value = '';
+}
+
+function editVolunteer(volunteerId) {
+    const volunteer = volunteersData.find(v => v.id === volunteerId);
+    if (!volunteer) return;
+    
+    document.getElementById('volunteer-id').value = volunteer.id;
+    document.getElementById('volunteer-name').value = volunteer.name;
+    document.getElementById('volunteer-email').value = volunteer.email;
+    document.getElementById('volunteer-modal-title').innerHTML = '<i class="fas fa-user-edit"></i> Edit Volunteer';
+    document.getElementById('volunteer-submit-btn').innerHTML = '<i class="fas fa-save"></i> Update';
+    document.getElementById('volunteerModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+async function saveVolunteer() {
+    const volunteerId = document.getElementById('volunteer-id').value;
+    const name = document.getElementById('volunteer-name').value.trim();
+    const email = document.getElementById('volunteer-email').value.trim().toLowerCase();
+    
+    if (!name || !email) {
+        showToast('Please fill in all fields', 'warning');
+        return;
+    }
+    
+    try {
+        const url = volunteerId ? `/api/volunteers/${volunteerId}` : '/api/volunteers';
+        const method = volunteerId ? 'PUT' : 'POST';
+        
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, email })
+        });
+        
+        if (response.ok) {
+            closeVolunteerModal();
+            loadVolunteers();
+            showToast(volunteerId ? 'Volunteer updated successfully!' : 'Volunteer added successfully!', 'success');
+        } else {
+            const error = await response.json();
+            showToast(error.error || 'Failed to save volunteer', 'danger');
+        }
+    } catch (error) {
+        console.error('Error saving volunteer:', error);
+        showToast('Error saving volunteer', 'danger');
+    }
+}
+
+async function deleteVolunteer(volunteerId) {
+    const volunteer = volunteersData.find(v => v.id === volunteerId);
+    if (!volunteer) return;
+    
+    if (!confirm(`Are you sure you want to delete ${volunteer.name}?`)) return;
+    
+    try {
+        const response = await fetch(`/api/volunteers/${volunteerId}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            loadVolunteers();
+            showToast('Volunteer deleted successfully!', 'success');
+        } else {
+            const error = await response.json();
+            showToast(error.error || 'Failed to delete volunteer', 'danger');
+        }
+    } catch (error) {
+        console.error('Error deleting volunteer:', error);
+        showToast('Error deleting volunteer', 'danger');
+    }
+}
+
 function refreshData() {
     loadInventory();
     loadSensorData();
     checkSpoilage();
+    loadVolunteers();
     showToast('Data refreshed!', 'success');
 }
 

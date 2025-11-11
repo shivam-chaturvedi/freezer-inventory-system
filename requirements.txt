@@ -5,8 +5,8 @@ Werkzeug==2.3.7
 python-dotenv==1.0.0
 schedule==1.2.0
 requests==2.31.0
-RPi.GPIO==0.7.1
-supabase
-gunicorn
-psycopg2-binary
-qrcode
+supabase>=2.8.0
+gunicorn==21.2.0
+psycopg2-binary==2.9.11
+qrcode==7.4.2
+Pillow>=10.2.0

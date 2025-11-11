@@ -74,6 +74,16 @@ def format_sensor(sensor):
         'air_quality': sensor['air_quality']
     }
 
+def format_volunteer(volunteer):
+    """Format volunteer data from Supabase"""
+    return {
+        'id': volunteer['id'],
+        'name': volunteer['name'],
+        'email': volunteer['email'],
+        'created_at': volunteer.get('created_at'),
+        'updated_at': volunteer.get('updated_at')
+    }
+
 # Routes
 @app.route('/')
 def dashboard():
@@ -296,6 +306,81 @@ def check_spoilage():
             'h2s_level': None,
             'co2_level': None
         })
+
+# Volunteers API Routes
+@app.route('/api/volunteers', methods=['GET'])
+def get_volunteers():
+    try:
+        response = supabase.table('volunteers').select('*').order('name', desc=False).execute()
+        volunteers = [format_volunteer(volunteer) for volunteer in response.data]
+        return jsonify(volunteers)
+    except Exception as e:
+        print(f"Error fetching volunteers: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/volunteers', methods=['POST'])
+def add_volunteer():
+    try:
+        data = request.get_json()
+        
+        volunteer_data = {
+            'name': data.get('name', '').strip(),
+            'email': data.get('email', '').strip().lower()
+        }
+        
+        if not volunteer_data['name'] or not volunteer_data['email']:
+            return jsonify({'error': 'Name and email are required'}), 400
+        
+        response = supabase.table('volunteers').insert(volunteer_data).execute()
+        
+        if response.data:
+            return jsonify(format_volunteer(response.data[0])), 201
+        else:
+            return jsonify({'error': 'Failed to create volunteer'}), 500
+            
+    except Exception as e:
+        print(f"Error adding volunteer: {e}")
+        error_msg = str(e)
+        if 'duplicate key' in error_msg.lower() or 'unique constraint' in error_msg.lower():
+            return jsonify({'error': 'Email already exists'}), 409
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/volunteers/<int:volunteer_id>', methods=['PUT'])
+def update_volunteer(volunteer_id):
+    try:
+        data = request.get_json()
+        
+        update_data = {}
+        if 'name' in data:
+            update_data['name'] = data['name'].strip()
+        if 'email' in data:
+            update_data['email'] = data['email'].strip().lower()
+        
+        if not update_data:
+            return jsonify({'error': 'No fields to update'}), 400
+        
+        response = supabase.table('volunteers').update(update_data).eq('id', volunteer_id).execute()
+        
+        if response.data:
+            return jsonify(format_volunteer(response.data[0]))
+        else:
+            return jsonify({'error': 'Volunteer not found'}), 404
+            
+    except Exception as e:
+        print(f"Error updating volunteer: {e}")
+        error_msg = str(e)
+        if 'duplicate key' in error_msg.lower() or 'unique constraint' in error_msg.lower():
+            return jsonify({'error': 'Email already exists'}), 409
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/volunteers/<int:volunteer_id>', methods=['DELETE'])
+def delete_volunteer(volunteer_id):
+    try:
+        response = supabase.table('volunteers').delete().eq('id', volunteer_id).execute()
+        return '', 204
+    except Exception as e:
+        print(f"Error deleting volunteer: {e}")
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     # Run on all interfaces so it's accessible from other devices
