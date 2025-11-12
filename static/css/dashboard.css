@@ -38,9 +38,9 @@ body {
 .horizontal-scroll-container {
     display: grid;
     grid-template-columns: 2fr 1fr;
-    gap: 5px;
+    gap: 4px;
     padding: 2px;
-    height: calc(100vh - 50px);
+    height: calc(100vh - 55px);
 }
 
 /* Scroll Sections */
@@ -89,44 +89,50 @@ body {
     border-bottom: 2px solid #6ba339;
     font-weight: 600;
     color: #000000;
-    padding: 3px 5px;
+    padding: 6px 8px;
     border-radius: 5px 5px 0 0 !important;
 }
 
 .card-header h5 {
     color: #000000;
     margin: 0;
-    font-size: 0.65rem;
+    font-size: 1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .card-body {
     color: #000000;
-    padding: 3px;
+    padding: 6px;
     flex: 1;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    min-height: 0;
 }
 
 .card-body.p-0 {
     padding: 0;
     overflow: hidden;
+    min-height: 0;
 }
 
 /* Form Elements - Ultra Small */
 .form-label {
     color: #000000;
-    font-weight: 600;
-    font-size: 0.55rem;
-    margin-bottom: 1px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 6px;
 }
 
 .form-control, .form-select {
     color: #000000;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    padding: 2px 4px;
-    font-size: 0.55rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 1.1rem;
     height: auto;
 }
 
@@ -136,13 +142,13 @@ body {
     color: #000000;
 }
 
-/* Buttons - Ultra Small */
+/* Buttons - Larger */
 .btn {
-    border-radius: 3px;
-    font-weight: 600;
-    padding: 2px 6px;
-    font-size: 0.55rem;
-    line-height: 1.2;
+    border-radius: 6px;
+    font-weight: 700;
+    padding: 10px 18px;
+    font-size: 1.1rem;
+    line-height: 1.4;
 }
 
 .btn-success {
@@ -161,15 +167,22 @@ body {
 }
 
 .btn-sm {
-    padding: 1px 3px !important;
-    font-size: 0.5rem !important;
-    line-height: 1 !important;
+    padding: 8px 14px !important;
+    font-size: 1rem !important;
+    line-height: 1.3 !important;
+}
+
+.btn-lg {
+    padding: 12px 24px !important;
+    font-size: 1.2rem !important;
+    line-height: 1.4 !important;
 }
 
 .btn-outline-danger {
     color: #e74c3c !important;
     border-color: #e74c3c !important;
-    padding: 1px 3px !important;
+    padding: 8px 14px !important;
+    font-size: 1rem !important;
 }
 
 .btn-outline-danger:hover {
@@ -178,26 +191,49 @@ body {
 }
 
 .btn-outline-danger i {
-    font-size: 0.5rem;
+    font-size: 1rem;
 }
 
-/* Inventory List - Ultra Compact */
+/* Inventory List - Larger and Scrollable */
 .inventory-scroll {
     flex: 1;
-    overflow: hidden;
-    padding: 2px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 10px;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 8px;
+    max-height: 100%;
+}
+
+/* Custom Scrollbar for Inventory */
+.inventory-scroll::-webkit-scrollbar {
+    width: 12px;
+}
+
+.inventory-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 6px;
+}
+
+.inventory-scroll::-webkit-scrollbar-thumb {
+    background: #6ba339;
+    border-radius: 6px;
+}
+
+.inventory-scroll::-webkit-scrollbar-thumb:hover {
+    background: #5a8c30;
 }
 
 .inventory-item {
     background: #f8f9fa;
     border: 1px solid #e9ecef;
-    border-radius: 3px;
-    padding: 3px;
-    margin-bottom: 2px;
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 6px;
     flex-shrink: 0;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .inventory-item:hover {
@@ -215,31 +251,35 @@ body {
 }
 
 .item-name {
-    font-size: 0.55rem;
-    font-weight: 600;
+    font-size: 1.1rem;
+    font-weight: 700;
     color: #000000;
-    margin-bottom: 1px;
-    line-height: 1.1;
+    margin-bottom: 4px;
+    line-height: 1.3;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .item-quantity {
-    font-size: 0.5rem;
-    font-weight: 500;
+    font-size: 0.95rem;
+    font-weight: 600;
     color: #000000;
     background: #ecf0f1;
-    padding: 1px 3px;
-    border-radius: 2px;
+    padding: 4px 8px;
+    border-radius: 4px;
     display: inline-block;
+    white-space: nowrap;
 }
 
 .item-category {
-    font-size: 0.45rem;
-    font-weight: 500;
-    padding: 1px 3px;
-    border-radius: 2px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
     color: white;
     display: inline-block;
-    margin-top: 1px;
+    margin-top: 4px;
+    white-space: nowrap;
 }
 
 .category-meat { background: #e74c3c; }
@@ -251,18 +291,21 @@ body {
 .category-other { background: #95a5a6; }
 
 .item-dates {
-    font-size: 0.45rem;
+    font-size: 0.85rem;
     color: #000000;
-    margin-top: 1px;
+    margin-top: 4px;
     opacity: 0.8;
-    line-height: 1.1;
+    line-height: 1.2;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .item-status {
-    font-size: 0.5rem;
-    font-weight: 500;
-    margin-top: 1px;
-    line-height: 1.1;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 4px;
+    line-height: 1.2;
+    white-space: nowrap;
 }
 
 .status-fresh { color: #27ae60; }
@@ -282,59 +325,68 @@ body {
     color: #000000;
 }
 
-/* Sensor Grid - Ultra Compact - 2 Columns */
+/* Sensor Grid - Responsive for 5" Display */
 .sensor-grid-compact {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2px;
+    gap: 4px;
     overflow: hidden;
 }
 
 .sensor-card-compact {
     background: #f8f9fa;
     border: 1px solid #e9ecef;
-    border-radius: 3px;
-    padding: 2px;
+    border-radius: 5px;
+    padding: 6px 8px;
     display: flex;
     align-items: center;
     flex-shrink: 0;
+    min-width: 0;
 }
 
 .sensor-icon-compact {
-    width: 14px;
-    height: 14px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 2px;
+    margin-right: 6px;
     flex-shrink: 0;
 }
 
 .sensor-icon-compact i {
-    font-size: 0.4rem;
+    font-size: 0.7rem;
     color: #ffffff !important;
 }
 
 .sensor-info-compact {
     flex: 1;
     min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .sensor-label-compact {
-    font-size: 0.4rem;
-    font-weight: 500;
+    font-size: 0.75rem;
+    font-weight: 600;
     color: #000000;
-    margin-bottom: 0;
+    margin-bottom: 2px;
     opacity: 0.8;
-    line-height: 1;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .sensor-value-compact {
-    font-size: 0.45rem;
-    font-weight: 600;
+    font-size: 0.9rem;
+    font-weight: 700;
     color: #000000;
-    line-height: 1;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .bg-primary { background-color: #6ba339 !important; }
@@ -346,7 +398,7 @@ body {
 .text-muted {
     color: #000000 !important;
     opacity: 0.6;
-    font-size: 0.45rem;
+    font-size: 1rem;
 }
 
 .empty-inventory {
@@ -363,12 +415,13 @@ body {
 }
 
 .empty-inventory h5 {
-    font-size: 0.55rem;
-    margin-bottom: 2px;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    font-weight: 700;
 }
 
 .empty-inventory p {
-    font-size: 0.5rem;
+    font-size: 1.1rem;
     margin: 0;
 }
 
@@ -391,6 +444,7 @@ body {
     .horizontal-scroll-container {
         gap: 3px;
         padding: 1px;
+        height: calc(100vh - 35px);
     }
     
     .card {
@@ -399,6 +453,23 @@ body {
     
     .container-fluid {
         padding: 2px !important;
+    }
+    
+    .navbar {
+        padding: 4px 0 !important;
+    }
+    
+    .btn-sm {
+        padding: 4px 6px !important;
+        font-size: 0.7rem !important;
+    }
+    
+    .item-name {
+        font-size: 1rem;
+    }
+    
+    .card-header h5 {
+        font-size: 0.9rem;
     }
 }
 
@@ -413,25 +484,27 @@ body {
     pointer-events: none;
 }
 
-/* Toast Notifications - Compact */
+/* Toast Notifications - Larger */
 .toast-notification {
     position: fixed;
     top: 25px;
     right: 5px;
     z-index: 9999;
-    min-width: 150px;
-    font-size: 0.5rem;
-    padding: 3px 5px;
+    min-width: 200px;
+    font-size: 1.1rem;
+    padding: 12px 16px;
+    font-weight: 600;
 }
 
 /* Alert Styling */
 .alert {
-    border-radius: 3px;
+    border-radius: 6px;
     border: none;
     color: #000000;
-    padding: 3px 5px;
-    margin-bottom: 3px;
-    font-size: 0.5rem;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
 }
 
 .alert-success {
@@ -526,7 +599,8 @@ body {
 .add-item-modal-header h5 {
     color: white !important;
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 1.4rem;
+    font-weight: 700;
 }
 
 .add-item-modal-header .btn-close-modal {
@@ -557,19 +631,21 @@ body {
 }
 
 .add-item-modal-body .form-label {
-    font-size: 0.7rem;
-    margin-bottom: 3px;
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+    font-weight: 700;
 }
 
 .add-item-modal-body .form-control,
 .add-item-modal-body .form-select {
-    font-size: 0.75rem;
-    padding: 6px 8px;
+    font-size: 1.1rem;
+    padding: 10px 14px;
 }
 
 .add-item-modal-body .btn {
-    font-size: 0.7rem;
-    padding: 6px 12px;
+    font-size: 1.1rem;
+    padding: 10px 18px;
+    font-weight: 700;
 }
 
 .gap-2 {
@@ -580,21 +656,41 @@ body {
 .volunteers-list {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 4px;
     overflow-y: auto;
     max-height: 100%;
+    min-height: 0;
+}
+
+.volunteers-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.volunteers-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.volunteers-list::-webkit-scrollbar-thumb {
+    background: #6ba339;
+    border-radius: 4px;
+}
+
+.volunteers-list::-webkit-scrollbar-thumb:hover {
+    background: #5a8c30;
 }
 
 .volunteer-item {
     background: #f8f9fa;
     border: 1px solid #e9ecef;
-    border-radius: 3px;
-    padding: 4px 6px;
+    border-radius: 5px;
+    padding: 6px 8px;
     display: flex;
     align-items: center;
     gap: 6px;
     flex-shrink: 0;
     position: relative;
+    min-width: 0;
 }
 
 .volunteer-item:hover {
@@ -617,14 +713,15 @@ body {
 .volunteer-action-btn {
     background: none;
     border: none;
-    padding: 2px 4px;
+    padding: 4px 6px;
     cursor: pointer;
-    border-radius: 2px;
-    font-size: 0.45rem;
-    line-height: 1;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    line-height: 1.2;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .volunteer-action-btn.edit {
@@ -647,12 +744,12 @@ body {
     background: linear-gradient(135deg, #6ba339 0%, #5a8c30 100%);
     color: white;
     border-radius: 50%;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.5rem;
+    font-size: 0.65rem;
     font-weight: 600;
     flex-shrink: 0;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
@@ -661,31 +758,39 @@ body {
 .volunteer-info {
     flex: 1;
     min-width: 0;
+    overflow: hidden;
 }
 
 .volunteer-name {
-    font-size: 0.55rem;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 700;
     color: #000000;
-    margin-bottom: 1px;
-    line-height: 1.2;
-}
-
-.volunteer-email {
-    font-size: 0.45rem;
-    color: #000000;
-    opacity: 0.7;
-    line-height: 1.1;
-    word-break: break-all;
+    margin-bottom: 3px;
+    line-height: 1.3;
+    word-break: break-word;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
+.volunteer-email {
+    font-size: 0.75rem;
+    color: #000000;
+    opacity: 0.7;
+    line-height: 1.2;
+    word-break: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}
+
 .empty-volunteers {
     text-align: center;
-    padding: 10px;
+    padding: 20px;
     color: #000000;
     opacity: 0.6;
-    font-size: 0.5rem;
+    font-size: 1.1rem;
 }

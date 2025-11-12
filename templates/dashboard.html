@@ -11,23 +11,17 @@
 </head>
 <body>
     <!-- Compact Header for 5" Display -->
-    <nav class="navbar navbar-dark bg-orange sticky-top" style="padding: 2px 0; min-height: auto;">
-        <div class="container-fluid" style="padding: 0 5px;">
-            <span class="navbar-brand mb-0" style="font-size: 0.6rem; line-height: 1.2;">
-                <img src="{{ url_for('static', filename='images/logo.jpeg') }}" alt="Logo" style="height: 15px; margin-right: 3px; border-radius: 2px; vertical-align: middle;"> 
-                Fridge
-            </span>
-            <div style="display: flex; gap: 2px;">
-                <button class="btn btn-success btn-sm" onclick="openAddItemModal()" style="padding: 2px 6px; font-size: 0.5rem; line-height: 1;">
-                    <i class="fas fa-plus" style="font-size: 0.5rem;"></i> Add Item
-                </button>
-                <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#qrModal" style="padding: 2px 4px; font-size: 0.5rem; line-height: 1;">
-                    <i class="fas fa-qrcode" style="font-size: 0.5rem;"></i>
-                </button>
-                <button class="btn btn-success btn-sm" onclick="refreshData()" style="padding: 2px 4px; font-size: 0.5rem; line-height: 1;">
-                    <i class="fas fa-sync-alt" style="font-size: 0.5rem;"></i>
-                </button>
-            </div>
+    <nav class="navbar navbar-dark bg-orange sticky-top" style="padding: 10px 0; min-height: auto;">
+        <div class="container-fluid" style="padding: 0 5px; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <button class="btn btn-success btn-sm" onclick="openAddItemModal()" style="padding: 12px 20px; font-size: 1.1rem; line-height: 1.4; flex: 1; min-width: 0;">
+                <i class="fas fa-plus" style="font-size: 1.1rem;"></i> <span class="d-none d-sm-inline">Add</span>
+            </button>
+            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#qrModal" style="padding: 12px 20px; font-size: 1.1rem; line-height: 1.4; flex: 1; min-width: 0;">
+                <i class="fas fa-qrcode" style="font-size: 1.1rem;"></i> <span class="d-none d-sm-inline">QR</span>
+            </button>
+            <button class="btn btn-success btn-sm" onclick="refreshData()" style="padding: 12px 20px; font-size: 1.1rem; line-height: 1.4; flex: 1; min-width: 0;">
+                <i class="fas fa-sync-alt" style="font-size: 1.1rem;"></i> <span class="d-none d-sm-inline">Refresh</span>
+            </button>
         </div>
     </nav>
     
@@ -259,9 +253,9 @@
 
                     <!-- Volunteers Section -->
                     <div class="card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0"><i class="fas fa-users"></i> Volunteers</h5>
-                            <button class="btn btn-success btn-sm" onclick="openAddVolunteerModal()" style="padding: 1px 4px; font-size: 0.45rem;">
+                        <div class="card-header d-flex justify-content-between align-items-center" style="gap: 4px;">
+                            <h5 class="mb-0" style="flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><i class="fas fa-users"></i> Volunteers</h5>
+                            <button class="btn btn-success btn-sm" onclick="openAddVolunteerModal()" style="padding: 4px 8px; font-size: 0.75rem; flex-shrink: 0;">
                                 <i class="fas fa-plus"></i>
                             </button>
                         </div>
